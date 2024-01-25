@@ -7,7 +7,7 @@
 ### Requirements
 | ID      | Name                                                | Requirements
 | :-----: | :-------------------------------------------------: | :-------------------------------------------------:
-| REQF01  | Current Day                                         | The current, maximum and minimum temperature. <br /> * The day that we are; <br /> * The name of the municipality <br /> * The probability of rain (devided into hourly quarters)
+| REQF01  | Current Day                                         | The current, maximum and minimum temperature. <br /> - The day that we are; <br /> - The name of the municipality <br /> - The probability of rain (devided into hourly quarters)
 | REQF02  | Next N days                                         |
 | REQF03  | Municipality Nested Search                          |
 | REQF04  | Meteorological Detail                               |
