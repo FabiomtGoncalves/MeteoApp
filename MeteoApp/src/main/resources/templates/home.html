@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head th:insert="~{fragments/navbar}">
+<meta charset="UTF-8">
+<title>Meteo APP</title>
+</head>
+<body>
+
+	<div class="text-center">
+
+		<div>
+			<h4>
+				Bem-vindo(a), <b th:text=${userName}></b>
+			</h4>
+		</div>
+
+
+		<!--      PROVINCIAS        -->
+		<div class="d-flex flex-row justify-content-center">
+			<div class="p-2">
+				<form th:action="@{/requestCodProv}" method="GET">
+					<label>Provincia:</label> <br> <select name="provincia"
+						id="provincia">
+						<option th:each="provincia: ${provinces}"
+							th:value=${provincia.codProv}
+							th:text=${provincia.nombreProvincia}></option>
+					</select> <br> <br>
+					<button type="submit" class="btn btn-primary btn-sm">Selecionar
+						Provincia</button>
+				</form>
+			</div>
+
+			<div class="p-2">
+				<!--      MUNICIPIOS        -->
+				<div th:if="${(param.provincia != null)}">
+					<form th:action="@{/requestCodIne}" method="GET">
+						<label>Municipio:</label> <br> <input type="hidden"
+							id="provincia" name="provincia" th:each="provincia: ${provinces}"
+							th:if="${(provincia.codProv == '' + param.provincia)}"
+							th:value=${provincia.codProv}> <select name="municipio"
+							id="municipio">
+							<option th:each="municipio: ${municipios}"
+								th:value=${municipio.codigoIne} th:text=${municipio.nombre}></option>
+						</select> <br> <br>
+						<button type="submit" class="btn btn-success btn-sm">Obter
+							Meteorologia</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div th:if="${(param.municipio != null) and getFav == 'null'}">
+			<div th:if="${(param.municipio != null) and getFav == 'null'}">
+				<form th:action="@{/addFav}" method="POST">
+					<input type="hidden" id="provincia" name="provincia"
+						th:value="${param.provincia}"> <input type="hidden"
+						id="municipio" name="municipio" th:value="${param.municipio}">
+					<input th:each="provincia: ${provinces}"
+						th:if="${provincia.codProv == '' + param.provincia}" type="hidden"
+						id="nameProvincia" name="nameProvincia"
+						th:value="${#strings.replace(provincia.nombreProvincia, ' ', '%20')}">
+					<input th:each="municipio: ${municipios}"
+						th:if="${municipio.codigoIne == '' + param.municipio}"
+						type="hidden" id="nameMunicipio" name="nameMunicipio"
+						th:value="${#strings.replace(municipio.nombre, ' ', '%20')}">
+					<button type="submit" class="btn btn-outline-success">
+						<i class="bi bi-heart-fill"></i> Adicionar aos Favoritos
+					</button>
+				</form>
+			</div>
+		</div>
+
+		<div th:if="${(param.municipio != null) and getFav == 'notNull'}">
+			<form th:action="@{/removeFav}" method="POST">
+				<input type="hidden" id="provincia" name="provincia"
+					th:value=${param.provincia}> <input type="hidden"
+					id="municipio" name="municipio" th:value=${param.municipio}>
+				<button type="submit" class="btn btn-outline-warning">
+					<i class="bi bi-heartbreak-fill"> </i>Remover dos Favoritos
+				</button>
+			</form>
+		</div>
+
+	</div>
+	<!--      TABLE PROVINCIAS        -->
+
+	<div class="d-flex flex-row justify-content-center text-center">
+		<div th:if="${(param.provincia != null)}" class="p-2">
+			<table class="table">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">PROVINCIA</th>
+						<th scope="col">COMUNIDADE/CIDADE AUTONOMA</th>
+						<th scope="col">CAPITAL</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="provincia: ${provinces}"
+						th:if="${(provincia.codProv == '' + param.provincia)}">
+						<th th:text=${provincia.nombreProvincia} scope="row"></th>
+						<td th:text=${provincia.comunidadCiudadAutonoma}></td>
+						<td th:text=${provincia.capitalProvincia}></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!--      TABLE MUNICIPIOS        -->
+
+		<div th:if="${(param.municipio != null)}" class="p-2">
+			<table class="table">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">MUNICIPIO</th>
+						<th scope="col">POPULAÇÃO</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="municipio: ${municipios}"
+						th:if="${(municipio.codigoIne == '' + param.municipio)}">
+						<th th:text=${municipio.nombre} scope="row"></th>
+						<td th:text=${municipio.poblacionCapital}></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+
+
+	<div th:if="${(param.municipio != null)}" class="p-2 text-center">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">DIA</th>
+					<!-- <th scope="col">ESTADO DO CÉU</th> <th scope="col">TEMPERATURAS</th> -->
+					<th scope="col">TEMPERATURA ATUAL</th>
+					<th scope="col">HUMIDADE</th>
+					<th scope="col">VENTO</th>
+					<!-- <th scope="col">CHUVA</th> -->
+					<th scope="col">PRECIPITAÇÃO</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="weatherMun: ${weather}">
+					<th th:text=${weatherMun.fecha} scope="row"></th>
+					<!-- <td th:text=${weatherMun.stateSky}></td> <td th:text=${weatherMun.temperaturas}></td>-->
+					<td th:text="${weatherMun.temperaturaActual} + 'ºC'"></td>
+					<td th:text="${weatherMun.humedad} + '%'"></td>
+					<td th:text="${weatherMun.viento} + 'km/h'"></td>
+					<!-- <td th:text=${weatherMun.lluvia}></td> -->
+					<td th:text="${weatherMun.precipitacion} + '%'"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- <p th:text=${param.provincia}>Provincia COD:</p>
+<p th:if="${(param.provincia == null)}">Selecione uma Provincia</p> -->
+
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head th:insert="~{fragments/navbar}">
+<meta charset="UTF-8">
+<title>Favorites</title>
+</head>
+<body>
+	<br>
+	<div class="text-center">
+		<h2>Favoritos</h2>
+		<br>
+		<div th:if="${not #lists.isEmpty(listCodIne)}">
+			<div
+				class="d-flex flex-row bd-highlight mb-3 justify-content-center flex-nowrap">
+				<div th:each="codIne, iterStat: ${listCodIne}"
+					class="card text-bg-success mb-3" style="max-width: 18rem;">
+					<div class="card-header">
+							<p>Municipio:
+							<b th:text=${listMunicipName[iterStat.index]} ></b>
+						</p>	
+					</div>
+					<div class="card-body">
+						<p>Provincia:
+							<b th:text=${listProvName[iterStat.index]} class="card-text"></b>
+						</p>	
+						<form th:action="@{/requestCodIne}" method="GET">
+							<input type="hidden" id="provincia" name="provincia"
+								th:value=${listCodProv[iterStat.index]}> 
+								<input type="hidden" id="municipio" name="municipio" th:value=${codIne}>
+							<button type="submit" class="btn btn-outline-success">
+								<i class="bi bi-brightness-high-fill"></i> Consultar Meteorologia
+							</button>
+						</form>
+						<br>
+						<form th:action="@{/removeFav}" method="POST">
+							<input type="hidden" id="provincia" name="provincia"
+								th:value=${listCodProv[iterStat.index]}> 
+								<input type="hidden" id="municipio" name="municipio" th:value=${codIne}>
+								<input type="hidden" id="favsPage" name="favsPage" value=1>
+							<button type="submit" class="btn btn-outline-danger">
+								<i class="bi bi-heartbreak-fill"></i> Remover Favorito
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div th:if="${#lists.isEmpty(listCodIne)}" class="text-center">
+			<h1>Ainda não adicionou nada aos favoritos.</h1>
+		</div>
+	</div>
+
+	
+</body>
+</html>
