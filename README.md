@@ -1,3 +1,10 @@
+```
+SpringToolSuite4
+JAVA
+Thymeleaf
+MySQL
+```   
+
 | REQUEST | API URL                                                                                           |
 |  :---:  |:-------------------------------------------------------------------------------------------------:|
 | GET     | https://www.el-tiempo.net/api/json/v2/provincias                                                  |
